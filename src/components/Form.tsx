@@ -1,53 +1,22 @@
 import { useState, useEffect } from "react";
 import { nameitens } from "../data/ItemName";
 import { itemsData } from "../data/itemsData";
-
-
-interface Idata {
-    date: string,
-    item: string,
-    responsible: string,
-    type: string,
-    value: string
-    __v: string
-    _id : string
-}
-
+import {
+  handleChangeCategoria,
+  handleChangeDatabase,
+  handleChangeReceitaDespesa,
+  handleChangeMonth,
+  handleSubmit,
+  handleWhichItem
+} from "../helpers/formFunc";
+import TableDisplayClube from "./TableDisplayClube";
+import { useContext } from "react";
+import { TableContext } from "../context/TableContext";
 
 const Form = () => {
-  const [bancoDeDados, setBancoDeDados] = useState<string>("");
-  const [categoria, setCategoria] = useState<string>("");
-  const [receitaDespesa, setReceitaDespesa] = useState<string>("")
-  const [month, setMonth] = useState<string>("");
-  const [isSubmitted, setIsSubmitted] = useState<boolean>(false)
-  const [data, setData] = useState([])
-  const [dataName, setDataName] = useState<string[]>([])
-  const handleChangeDatabase = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setBancoDeDados(e.target.value);
-    setCategoria('')
-    setMonth('')
-    setReceitaDespesa('')
-  }
-
-  const handleSubmit = async (e:any) => {
-    e.preventDefault()
-   console.log(dataName)
-   // setIsSubmitted(true)
-  }
-
-  const handleChangeReceitaDespesa = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setReceitaDespesa(e.target.value)
-    setCategoria('')
-    setMonth('')
-  }
-    
-  const handleChangeCategoria = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setCategoria(e.target.value);
-    setMonth('')
-  }
-    
-  const handleChangeMonth = (e: React.ChangeEvent<HTMLSelectElement>) =>
-    setMonth(e.target.value);
+  const { categoria, setCategoria, bancoDeDados, setBancoDeDados, setMonth, receitaDespesa, setReceitaDespesa, setWhichItem } = useContext(TableContext)
+  
+  const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
 
   const decideCategoria = () => {
     switch (categoria) {
@@ -58,7 +27,7 @@ const Form = () => {
               Pesquisar por qual mês?
             </label>
             <select
-              onChange={(e) => handleChangeMonth(e)}
+              onChange={(e) => handleChangeMonth(e, setMonth)}
               id="third_choice"
               defaultValue="categoria"
               className="p-1 w-48 bg-gray-100  rounded"
@@ -87,17 +56,15 @@ const Form = () => {
               Pesquisar por qual item?
             </label>
             <select
-              onChange={(e) => handleChangeMonth(e)}
+              onChange={(e) => handleWhichItem(e, setWhichItem)}
               id="third_choice"
               defaultValue="categoria"
               className="p-1 w-48 bg-gray-100  rounded"
               name="third_choice"
             >
-              <option disabled value="categoria">
-                Opções
-              </option>
+              <option value="categoria">Selecionar</option>
               {nameitens.map((item, index) => (
-                <option key={index} value={item}>
+                <option key={index} value={item.toLowerCase()}>
                   {item}
                 </option>
               ))}
@@ -109,105 +76,107 @@ const Form = () => {
     }
   };
 
-  useEffect(() => {
-    
-    const fetchData = async () => {
-        const allData = await itemsData()
-        for(let i of allData){
-            setDataName(oldArray => [...oldArray, i.item])
-        }
-        
-    }
-
-    fetchData()
-  }, [])
-
   return (
     <div>
-        {isSubmitted ? <div>
-            {data.length > 1 ? <table>
-                <thead>
-                    
-                </thead>
-                <tbody>
-                    {}
-                </tbody>
-            </table> : null}
-            
-        </div> : <form
-      onSubmit={handleSubmit}
-      className="flex flex-col items-center"
-    >
-      <label htmlFor="first_choice" className="pb-2 text-gray-300">
-        Escolha abaixo o banco de dados
-      </label>
-      <select
-        onChange={(e) => handleChangeDatabase(e)}
-        id="first_choice"
-        defaultValue="banco_de_dados"
-        className="p-1 w-48 bg-gray-100 rounded"
-        name="first_choice"
-      >
-        <option disabled value="banco_de_dados">
-          Banco de dados
-        </option>
-        <option value="clube_itajubense">Clube Itajubense</option>
-      </select>
-      {bancoDeDados === "clube_itajubense" ? <div className="flex mt-8 items-center flex-col">
-      <label htmlFor="first_choice" className="pb-2 text-gray-300">
-        Escolha abaixo a opção desejada
-      </label>
-      <select
-        onChange={(e) => handleChangeReceitaDespesa(e)}
-        id="first_choice"
-        defaultValue="banco_de_dados"
-        className="p-1 w-48 bg-gray-100 rounded"
-        name="first_choice"
-      >
-        <option disabled value="banco_de_dados">
-          Opções
-        </option>
-        <option value="receita">Receitas</option>
-        <option value="despesas">Despesas</option>
-      </select>
-        {receitaDespesa ? (
-        <div className="flex mt-8 items-center flex-col">
-          <label className="pb-2 text-gray-300" htmlFor="second_choice">
-            Pesquisar por qual categoria?
+      {isSubmitted ? (
+        <div className="bg-transparent h-full">
+          <TableDisplayClube></TableDisplayClube>
+        </div>
+      ) : (
+        <form
+          onSubmit={(e) => {
+            handleSubmit(e, setIsSubmitted);
+          }}
+          className="flex py-20 flex-col items-center"
+        >
+          <label htmlFor="first_choice" className="pb-2 text-gray-300">
+            Escolha abaixo o banco de dados
           </label>
           <select
-            onChange={(e) => handleChangeCategoria(e)}
-            id="second_choice"
-            defaultValue="categoria"
-            className="p-1 w-48 bg-gray-100  rounded"
-            name="second_choice"
+            onChange={(e) =>
+              handleChangeDatabase(
+                e,
+                setBancoDeDados,
+                setCategoria,
+                setMonth,
+                setReceitaDespesa
+              )
+            }
+            id="first_choice"
+            defaultValue="banco_de_dados"
+            className="p-1 w-48 bg-gray-100 rounded"
+            name="first_choice"
           >
-            <option disabled value="categoria">
-              Categoria
+            <option disabled value="banco_de_dados">
+              Banco de dados
             </option>
-            <option disabled>Dia</option>
-            <option value="mes">Mês</option>
-            <option value="item">Item</option>
-            <option value="valor">Valor</option>
-            <option value="geral">Geral</option>
+            <option value="clube_itajubense">Clube Itajubense</option>
           </select>
-          {categoria ? decideCategoria() : null}
-        </div>
-      ) : null}
-      </div> : null}
-      {bancoDeDados ? (
-        categoria ? (
-          month ? (
-            <button
-              type="submit"
-              className="mt-10 hover:scale-105 duration-300 bg-gradient-to-br from-neutral-400 h-8 to-neutral-800 rounded-full w-48"
-            >
-              Pesquisar
-            </button>
-          ) : null
-        ) : null
-      ) : null}
-    </form>}
+          {bancoDeDados === "clube_itajubense" ? (
+            <div className="flex mt-8 items-center flex-col">
+              <label htmlFor="first_choice" className="pb-2 text-gray-300">
+                Escolha abaixo a opção desejada
+              </label>
+              <select
+                onChange={(e) =>
+                  handleChangeReceitaDespesa(
+                    e,
+                    setReceitaDespesa,
+                    setCategoria,
+                    setMonth
+                  )
+                }
+                id="first_choice"
+                defaultValue="banco_de_dados"
+                className="p-1 w-48 bg-gray-100 rounded"
+                name="first_choice"
+              >
+                <option disabled value="banco_de_dados">
+                  Opções
+                </option>
+                <option value="receita">Receitas</option>
+                <option value="despesas">Despesas</option>
+              </select>
+              {receitaDespesa ? (
+                <div className="flex mt-8 items-center flex-col">
+                  <label className="pb-2 text-gray-300" htmlFor="second_choice">
+                    Pesquisar por qual categoria?
+                  </label>
+                  <select
+                    onChange={(e) =>
+                      handleChangeCategoria(e, setCategoria, setMonth)
+                    }
+                    id="second_choice"
+                    defaultValue="categoria"
+                    className="p-1 w-48 bg-gray-100  rounded"
+                    name="second_choice"
+                  >
+                    <option disabled value="categoria">
+                      Categoria
+                    </option>
+                    <option disabled>Dia</option>
+                    <option value="mes">Mês</option>
+                    <option value="item">Item</option>
+                    <option value="valor">Valor</option>
+                    <option value="geral">Geral</option>
+                  </select>
+                  {categoria ? decideCategoria() : null}
+                </div>
+              ) : null}
+            </div>
+          ) : null}
+          {bancoDeDados ? (
+            categoria ? (
+              <button
+                type="submit"
+                className="mt-10 hover:scale-105 duration-300 bg-gradient-to-br from-neutral-400 h-8 to-neutral-800 rounded-full w-48"
+              >
+                Pesquisar
+              </button>
+            ) : null
+          ) : null}
+        </form>
+      )}
     </div>
   );
 };
