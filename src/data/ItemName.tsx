@@ -12,3 +12,28 @@ export const nameitens: string[] = [
   "Venda de Bens",
   "Venda de Jóias"
 ];
+
+export const nameItensDespesas: string[] = [
+  "Água e Esgoto",
+  "Benefícios (vale compras/transporte)",
+  "Carnê/Boleto",
+  "Confraternização Funcionários",
+  "Contratos Terceirizados",
+  "Convênios(Médico/Odonto/Farmacia)",
+  "ECAD(Direitos Musicais)",
+  "Encargos",
+  "Energia Elétrica",
+  "EPI's/Uniformes/Cursos",
+  "IPVA",
+  "Lanches e Refeições",
+  "Material de Escritório",
+  "Material de Limpeza"
+]
+
+export const responsaveis: string[] = [
+  "Diretoria Administrativa",
+  "Diretoria de Esportes",
+  "Diretoria de Patrimonio",
+  "Diretoria Social",
+  "Investimentos"
+]

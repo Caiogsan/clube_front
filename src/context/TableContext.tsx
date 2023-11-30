@@ -5,6 +5,7 @@ interface Idata {
   date: string;
   value: string;
   type: string;
+  responsible: string
 }
 
 interface TableContextProps {
@@ -19,6 +20,11 @@ interface TableContextProps {
   month : string
   whichItem : string
   setWhichItem: React.Dispatch<React.SetStateAction<string>>
+  searchValue: string
+  setSearchValue: React.Dispatch<React.SetStateAction<string>>
+  dataNameDespesa: Idata[]
+  setDiretoria: React.Dispatch<React.SetStateAction<string>>
+  diretoria: string
 }
 
 export const TableContext = createContext<TableContextProps>({
@@ -32,5 +38,10 @@ export const TableContext = createContext<TableContextProps>({
   setMonth: () => {},
   month: '',
   whichItem: '',
-  setWhichItem: () => {} 
+  setWhichItem: () => {},
+  searchValue: '',
+  setSearchValue: () => {},
+  dataNameDespesa: [],
+  diretoria: '',
+  setDiretoria: () => {}
 });

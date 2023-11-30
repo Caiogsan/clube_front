@@ -7,11 +7,25 @@ export const handleChangeCategoria = (
   setMonth("");
 };
 
+export const handleValueSearch = (
+  e: React.ChangeEvent<HTMLInputElement>,
+  setSearchValue: React.SetStateAction<any>
+) => {
+  setSearchValue(e.target.value);
+};
+
+export const handleChangeResponsible = (
+  e: React.ChangeEvent<HTMLSelectElement>,
+  setDiretoria: React.SetStateAction<any>
+) => {
+  setDiretoria(e.target.value);
+};
+
 export const handleWhichItem = (
   e: React.ChangeEvent<HTMLSelectElement>,
   setWhichItem: React.SetStateAction<any>
 ) => {
-  setWhichItem(e.target.value)
+  setWhichItem(e.target.value);
 };
 
 export const handleSubmit = (

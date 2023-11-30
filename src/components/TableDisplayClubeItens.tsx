@@ -1,5 +1,4 @@
-import { useContext } from "react";
-import { TableContext } from "../context/TableContext";
+
 
 interface Idata {
   item: string;
@@ -9,19 +8,21 @@ interface Idata {
 }
 
 interface displayProps {
-    dataName: Idata[]
-} 
+  dataName: Idata[];
+  categoria: string
+  mes: string
+  media: string
+  total: number
+}
 
-
-const TableDisplayClubeItens: React.FC<displayProps> = ({ dataName }) => {
- 
+const TableDisplayClubeItens: React.FC<displayProps> = ({ dataName, categoria, mes, media, total }) => {
   let priceInBrl = new Intl.NumberFormat("pt-BR", {
     style: "currency",
     currency: "BRL",
   });
 
   return (
-    <div className="flex py-20 justify-center items-center">
+    <div className="flex py-20 flex flex-col justify-center items-center">
       <div className=" w-[55rem] bg-white">
         <div className="border-b-2 flex h-8 border-black">
           <div className="w-[60%] border-r-2 border-black flex items-center justify-center font-bold">
@@ -47,6 +48,32 @@ const TableDisplayClubeItens: React.FC<displayProps> = ({ dataName }) => {
             </div>
           </div>
         ))}
+      </div>
+      <div className=" w-[55rem] mt-20 bg-white">
+        <div className="border-b-2 flex h-8 border-black">
+          <div className="w-[60%] border-r-2 border-black flex items-center justify-center">
+            Média por {categoria}
+          </div>
+          <div className="w-[20%] border-r-2 border-black flex items-center justify-center">
+            {mes}
+          </div>
+          <div className="w-[20%] flex items-center justify-center">
+            {priceInBrl.format(Number(media))}
+          </div>
+        </div>
+      </div>
+      <div className=" w-[55rem] bg-white">
+        <div className="border-b-2 flex h-8 border-black">
+          <div className="w-[60%] border-r-2 border-black flex items-center justify-center">
+            Valor total
+          </div>
+          <div className="w-[20%] border-r-2 border-black flex items-center justify-center">
+            {mes}
+          </div>
+          <div className="w-[20%] flex items-center justify-center">
+            {priceInBrl.format(total)}
+          </div>
+        </div>
       </div>
     </div>
   );
